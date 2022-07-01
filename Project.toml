@@ -1,0 +1,4 @@
+name = "PlanetEvolution"
+uuid = "15635e2b-20b8-4498-9abf-3eb941baf481"
+authors = ["David James <davidabraham@ucla.edu>"]
+version = "0.1.0"

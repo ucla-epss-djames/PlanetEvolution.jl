@@ -1,0 +1,77 @@
+module TRIPS
+# [T]idal [R]esponse [I]n [P]lanetary [S]tructure
+
+using PhysicalConstants.CODATA2014: G
+using QuadGK: quadgk
+using Polynomials: Polynomial
+
+using Structure
+using Tidal
+using Planets
+
+export calc_gravity, planet_structure, trips
+
+calc_gravity(r0::Real, r1::Real, mass::Real, ρ) = _calc_gravity(r0, r1, mass, ρ)
+
+function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Polynomial)
+
+    res, err = quadgk(x -> planet_m(x, ρ(x)), r0, r1)
+    m += res
+
+    g = planet_g(r1, m*G.val)
+
+    return mass, g
+end
+
+function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Real)
+
+    m, err = quadgk(x -> planet_m(x, ρ), r0, r1)
+
+    g = planet_g(r1, m*G.val)
+
+    return mass, g
+end
+
+
+function planet_structure(plnt::Planet, data::Matrix)
+
+    mass = 0.0
+    r0 = 0.0
+    layers = plnt.layers
+    ω = plnt.ω
+    μ_f = plnt.μ_f
+    model = plnt.rhea_model
+
+    sd = zeros(Complex, layers, 4)
+
+    for i in 1:layers
+
+        r1 = data[i,1]
+        ρ = data[i,2]
+        μ = data[i,3]
+        η = data[i,4]
+
+        if(i != 1) r0 = real(sd[i-1,1]) end
+        mass, g = calc_gravity(r0, r1, mass, ρ)
+
+        sd[i,4] = ρ
+        sd[i,3] = g
+        sd[i,2] = planet_cmu(μ, ω, η, r1, g, ρ, μ_f, model)
+        sd[i,1] = r1
+
+    end
+
+    return sd, mass
+end
+
+function tidal_resp(plnt::Planet, data::Matrix)
+
+    sd, mass = planet_structure(plnt, data)
+    flag = use_GD_core(real(sd[1,1]), real(sd[1,2]))
+
+    normalize!(mass, real(sd[end,1]), sd)
+    tidal = propagator_method(l, plnt.layers, sd, flag)
+
+end
+
+end # module
