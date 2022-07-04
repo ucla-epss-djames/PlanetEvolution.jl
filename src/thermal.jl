@@ -1,5 +1,5 @@
-module OTTER
-# [O]ribtal, [T]hermal, and [T]idal [E]volutionary [R]esponse
+module ThE
+# [Th]ermal [E]volution
 
 using Roots
 using Quadgk
@@ -11,13 +11,17 @@ using Numerics
 using Structure
 using Planets
 using Thermal
-using Trips: calc_gravity
+
+using ..PlanetEvolution: calc_gravity
+
+export one_layer_plnt, two_layer_plnt, find_core
 
 const P1 = 1 * Bar_to_Pa
 
-function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real)
+function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
+                        t1::Real=10.0)
 
-    g, P = init_profiles(plnt)
+    g, P = init_profiles(plnt, ρ)
 
     function dTdt(T, p, t)
 
@@ -33,7 +37,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real)
     I = cons_mass(p, P1, 0, plnt.R) * -4*π * plnt.C_p
 
     u = T1
-    tspan = (0, 10.0*Gyr_to_sec)
+    tspan = (t0, t1*Gyr_to_sec)
     param = (plnt=plnt, I=I, T_ef=temp_effective, L=lumin_internal)
 
     prob = ODEProblem(dTdt, u, tspan, param)
@@ -46,7 +50,8 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real)
     return [t, T]
 end
 
-function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0)
+function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
+                        t0::Real=0.0, t1::Real=10.0)
 
     function dTdt(T, p, t)
 
@@ -87,12 +92,12 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0)
         return [dT1, dTi]
     end
 
-    g, P = init_profiles(plnt)
+    g, P = init_profiles(plnt, ρ)
 
     if(Ti == 0) Ti = temp_adiabat(P[1,2], T1, P1, plnt.∇) end
 
     u = [T1, Ti]
-    tspan = (0., 10.0*Gyr_to_sec)
+    tspan = (t0, t1*Gyr_to_sec)
     param = (plnt=plnt, ρ=ρ, g=g, P=P, find_core=find_core, I=cons_mass,
              T_ef=temp_effective, T=temp_adiabat, T_m=temp_melting,
              L=lumin_internal, L_c=lumin_core)
@@ -139,7 +144,7 @@ function init_profiles(plnt::Planet, ρ::Function)
     return ([r g], [x P])
 end
 
-function cons_mass(p, P, a, b)
+function cons_mass(p, P::Real, a::Real, b::Real)
 
     A, err = quadgk(r -> layer_density(r, p.i(p.P[:,1], p.P[:,2], r), P,
                                        p.plnt.∇, p.ρ(r)), a, b)
@@ -147,7 +152,7 @@ function cons_mass(p, P, a, b)
     return A
 end
 
-function find_core(T1, p)
+function find_core(T1::Real, p)
 
     # cross section of melting and adiabat
     f(P) = p.T(P, T1, P1, p.plnt.∇) - p.T_m(P, p.plnt.P0, p.plnt.T0, p.plnt.a,

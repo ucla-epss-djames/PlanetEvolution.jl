@@ -25,11 +25,12 @@ end
 
 function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Real)
 
-    m, err = quadgk(x -> planet_m(x, ρ), r0, r1)
+    res, err = quadgk(x -> planet_m(x, ρ), r0, r1)
+    m += res
 
     g = planet_g(r1, m*G.val)
 
-    return mass, g
+    return m, g
 end
 
 
