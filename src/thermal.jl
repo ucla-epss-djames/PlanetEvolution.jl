@@ -2,9 +2,8 @@ module ThE
 # [Th]ermal [E]volution
 
 using Roots
-using Quadgk
+using QuadGK
 using Polynomials
-using Interpolations
 using DifferentialEquations
 
 using Numerics
@@ -16,7 +15,7 @@ using ..PlanetEvolution: calc_gravity
 
 export one_layer_plnt, two_layer_plnt, find_core
 
-const P1 = 1 * Bar_to_Pa
+const P1 = 1 * bar_to_Pa
 
 function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
                         t1::Real=10.0)
@@ -63,7 +62,7 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
         L = p.L(p.plnt.R, T_ef, p.plnt.T_eq)
         c, P_c, T_c, ρ_c, g_c = find_core(T1, p)
 
-        if c = 0.0
+        if c == 0.0
             # if planet is still fluid
 
             I = p.I(p, P1, 0, p.plnt.R) * -4*π * p.plnt.C_p
