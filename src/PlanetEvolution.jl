@@ -11,6 +11,7 @@ export
     one_layer_plnt,
     two_layer_plnt,
     init_profiles,
+    temp,
     find_core
 
 include("orbits.jl")

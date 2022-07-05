@@ -12,7 +12,7 @@ using Thermal
 
 using ..PlanetEvolution: calc_gravity
 
-export one_layer_plnt, two_layer_plnt, init_profiles, find_core
+export one_layer_plnt, two_layer_plnt, init_profiles, temp, find_core
 
 const P1 = 1 * bar_to_Pa
 
@@ -140,6 +140,15 @@ function init_profiles(plnt::Planet, ρ::Function)
     x = sol.t[end:-1:1]
 
     return ([r g], [x P])
+end
+
+function temp(r, T1, Ti, P_c, p)
+    P, dP = interpolate(p.P[:,1], p.P[:,2], r)
+    if P < P_c
+        return temp_adiabat(P, T1, P1, p.plnt.∇)
+    else
+        return temp_adiabate(P, Ti, P_c, p.plnt.∇)
+    end
 end
 
 function cons_mass(p, P::Real, a::Real, b::Real)
