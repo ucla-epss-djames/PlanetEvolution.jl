@@ -45,7 +45,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
     t = sol.t
     t /= Gyr_to_sec
 
-    return [t, T]
+    return [t T]
 end
 
 function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
