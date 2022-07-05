@@ -3,7 +3,6 @@ module TRIPS
 
 using PhysicalConstants.CODATA2014: G
 using QuadGK: quadgk
-using Polynomials: Polynomial
 
 using Structure
 using Tidal
@@ -13,7 +12,7 @@ export calc_gravity, planet_structure, trips
 
 calc_gravity(r0::Real, r1::Real, mass::Real, ρ) = _calc_gravity(r0, r1, mass, ρ)
 
-function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Polynomial)
+function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Function)
 
     res, err = quadgk(x -> planet_m(x, ρ(x)), r0, r1)
     m += res

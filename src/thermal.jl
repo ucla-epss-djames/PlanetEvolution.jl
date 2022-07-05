@@ -3,7 +3,6 @@ module ThE
 
 using Roots
 using QuadGK
-using Polynomials
 using DifferentialEquations
 
 using Numerics
