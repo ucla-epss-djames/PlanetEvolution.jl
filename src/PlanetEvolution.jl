@@ -4,6 +4,10 @@ greet() = print("Hello Explorer!")
 
 include("tidal.jl")
 using .TRIPS
+export
+    calc_gravity,
+    planet_structure,
+    tidal_resp
 
 include("thermal.jl")
 using .ThE
