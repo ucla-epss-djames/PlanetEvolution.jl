@@ -38,8 +38,8 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
     tspan = (t0, t1*Gyr_to_sec)
     param = (plnt=plnt, I=I, T_ef=temp_effective, L=lumin_internal)
 
-    prob = ODEProblem(dTdt, u, tspan, param)
-    sol = solve(prob, reltol=1e-6, abstold=1e-7, Tsit5())
+    prob = ODEProblem(dTdt, u, tspan, parami, Tsit5())
+    sol = solve(prob, reltol=1e-6, abstold=1e-7)
 
     T = sol.u
     t = sol.t
