@@ -10,6 +10,7 @@ using .ThE
 export
     one_layer_plnt,
     two_layer_plnt,
+    init_profiles,
     find_core
 
 include("orbits.jl")
