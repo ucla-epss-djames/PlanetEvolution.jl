@@ -139,6 +139,12 @@ function init_profiles(plnt::Planet, ρ::Function)
     P = sol.u[end:-1:1]
     x = sol.t[end:-1:1]
 
+    open("pressure_profile", "w") do io
+        for i in 1:length(P)
+            @printf(io, "%16.8e %16.8e\n", x[i], P[i])
+        end
+    end
+
     return ([r g], [x P])
 end
 
