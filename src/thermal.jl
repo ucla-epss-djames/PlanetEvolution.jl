@@ -26,7 +26,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
         T_ef = p.T_ef(T, p.plnt.B)
         L_f = p.L(p.plnt.R, T_ef, p.plnt.T_eq)
 
-        dT = L_f / p.I1
+        dT = L_f / p.I
 
         return dT
     end
