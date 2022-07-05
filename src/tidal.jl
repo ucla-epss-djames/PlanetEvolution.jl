@@ -8,7 +8,7 @@ using Structure
 using Tidal
 using Planets
 
-export calc_gravity, planet_structure, trips
+export calc_gravity, planet_structure, tidal_resp
 
 calc_gravity(r0::Real, r1::Real, mass::Real, ρ) = _calc_gravity(r0, r1, mass, ρ)
 
