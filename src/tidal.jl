@@ -19,7 +19,7 @@ function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Function)
 
     g = planet_g(r1, m*G.val)
 
-    return mass, g
+    return m, g
 end
 
 function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Real)
