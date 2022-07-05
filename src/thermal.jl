@@ -12,7 +12,7 @@ using Thermal
 
 using ..PlanetEvolution: calc_gravity
 
-export one_layer_plnt, two_layer_plnt, find_core
+export one_layer_plnt, two_layer_plnt, init_profiles, find_core
 
 const P1 = 1 * bar_to_Pa
 
@@ -138,12 +138,6 @@ function init_profiles(plnt::Planet, ρ::Function)
     sol = solve(prob, reltol=1e-8, abstol=1e-10, Tsit5())
     P = sol.u[end:-1:1]
     x = sol.t[end:-1:1]
-
-    open("pressure_profile", "w") do io
-        for i in 1:length(P)
-            @printf(io, "%16.8e %16.8e\n", x[i], P[i])
-        end
-    end
 
     return ([r g], [x P])
 end
