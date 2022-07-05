@@ -130,7 +130,7 @@ function init_profiles(plnt::Planet, ρ::Function)
     end
 
     # pressure profile
-    dP(u, p, x) = dPdr(ρ(x), interpolate(r, g, x))
+    dP(u, p, x) = dPdr(ρ(x), interpolate(r, g, x)[1])
     rspan = (plnt.R, 0)
     u0 = 0
 
