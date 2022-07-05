@@ -144,7 +144,7 @@ end
 
 function cons_mass(p, P::Real, a::Real, b::Real)
 
-    A, err = quadgk(r -> layer_density(r, p.i(p.P[:,1], p.P[:,2], r), P,
+    A, err = quadgk(r -> layer_density(r, p.i(p.P[:,1], p.P[:,2], r)[1], P,
                                        p.plnt.∇, p.ρ(r)), a, b)
 
     return A
