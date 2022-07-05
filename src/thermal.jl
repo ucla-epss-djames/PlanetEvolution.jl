@@ -167,14 +167,14 @@ function find_core(T1::Real, p)
         P_c = x[1]
 
         # use core pressure to interpolate the radius of the core
-        c = interpolate(p.P[:,2], p.P[:,1], P_c)
+        c, dc = interpolate(p.P[:,2], p.P[:,1], P_c)
 
     end
 
     # gather the rest of the surface core values
     T_c = p.T(P_c, T1, P1, p.plnt.∇)
     ρ_c = p.ρ(c)
-    g_c = interpolate(p.g[:,1], p.g[:,2], c)
+    g_c = interpolate(p.g[:,1], p.g[:,2], c)[1]
 
     return (c, P_c, T_c, ρ_c, g_c)
 end
