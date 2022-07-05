@@ -64,7 +64,7 @@ function planet_structure(plnt::Planet, data::Matrix)
     return sd, mass
 end
 
-function tidal_resp(plnt::Planet, data::Matrix, flag::Bool)
+function tidal_resp(plnt::Planet, data::Matrix, flag::Bool; l::Int=2)
 
     sd, mass = planet_structure(plnt, data)
 
