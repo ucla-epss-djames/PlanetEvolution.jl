@@ -147,7 +147,7 @@ function temp(r, T1, Ti, P_c, p)
     if P < P_c
         return temp_adiabat(P, T1, P1, p.plnt.∇)
     else
-        return temp_adiabate(P, Ti, P_c, p.plnt.∇)
+        return temp_adiabat(P, Ti, P_c, p.plnt.∇)
     end
 end
 
