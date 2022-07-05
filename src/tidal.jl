@@ -64,10 +64,9 @@ function planet_structure(plnt::Planet, data::Matrix)
     return sd, mass
 end
 
-function tidal_resp(plnt::Planet, data::Matrix)
+function tidal_resp(plnt::Planet, data::Matrix, flag::Bool)
 
     sd, mass = planet_structure(plnt, data)
-    flag = use_GD_core(real(sd[1,1]), real(sd[1,2]))
 
     normalize!(mass, real(sd[end,1]), sd)
     tidal = propagator_method(l, plnt.layers, sd, flag)
