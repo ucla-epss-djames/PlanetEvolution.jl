@@ -8,6 +8,7 @@ using .TRIPS
 include("thermal.jl")
 using .ThE
 export
+    P1,
     one_layer_plnt,
     two_layer_plnt,
     init_profiles,

@@ -12,6 +12,7 @@ using Thermal
 
 using ..PlanetEvolution: calc_gravity
 
+export P1
 export one_layer_plnt, two_layer_plnt, init_profiles, temp, find_core
 
 const P1 = 1 * bar_to_Pa
