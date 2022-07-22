@@ -24,5 +24,4 @@ using .Orbit
 export
     orbital_recession
 
-
 end # module

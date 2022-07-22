@@ -6,9 +6,26 @@ using Numerics: interpolate, rk4
 
 export orbital_recession
 
+"""
+    orbital_recession(plnt::Planet, mn::Moon, kl::AbstractVector,
+                      Ql::AbstractVector, t::AbstractVector, t0::Real,
+                      t1::Real; steps::Int=100)
+
+Calculates the orbital recession of a planet's moon.
+
+# Arguments
+- `plnt::Planet`       - planet parameters
+- `mn::Moon`           - moon parameters
+- `kl::AbstractVector` - kl tidal number evolution
+- `Ql::AbstractVector` - Ql tidal quality evolution
+- `t::AbstractVector`  - time span of `kl` and `Ql`
+- `t0::Real`           - time start of recession
+- `t1::Real`           - time end of recession
+- `steps::Int=100`     - number of steps to take in solver
+"""
 function orbital_recession(plnt::Planet, mn::Moon, kl::AbstractVector,
-                          Ql::AbstractVector, t::AbstractVector, t0::Real,
-                          t1::Real; steps::Int=100)
+                           Ql::AbstractVector, t::AbstractVector, t0::Real,
+                           t1::Real; steps::Int=100)
 
     function dadt(t, a, p)
 

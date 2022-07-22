@@ -17,6 +17,20 @@ export one_layer_plnt, two_layer_plnt, init_profiles, temp, find_core
 
 const P1 = 1 * bar_to_Pa
 
+"""
+    one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
+                   t1::Real=10.0)
+
+Solves out thermal evolution for a fluid planet. Returns a two column matrix where
+the first column is time [Gyr] and the second column is temperature [K].
+
+# Arguments
+- `plnt::Planet` - planet parameters
+- `ρ::Function`  - density profile
+- `T1::Real`     - initial temperature for solver
+- `t0::Real`     - time start of thermal evolution
+- `t1::Real`     - time end of thermal evolution
+"""
 function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
                         t1::Real=10.0)
 
@@ -49,6 +63,22 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
     return [t T]
 end
 
+"""
+    two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0, t0::Real=0.0,
+                   t1::Real=10.0)
+
+Solves out thermal evolution for a two layer planet. Returns a three column matrix
+where the first column is time [Gyr], the second is temperature of the planet [K],
+and the thrid is temperature of the thermal boundary layer [K].
+
+# Arguments
+- `plnt::Planet` - planet parameters
+- `ρ::Function`  - density profile
+- `T1::Real`     - initial temperature for solver
+- `Ti::Real`     - initial temperature for thermal booundary layer
+- `t0::Real`     - time start of thermal evolution
+- `t1::Real`     - time end of thermal evolution
+"""
 function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
                         t0::Real=0.0, t1::Real=10.0)
 
@@ -111,6 +141,15 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
     return [t T1 Ti]
 end
 
+"""
+    init_profiles(plnt::Planet, ρ::Function)
+
+Generates a gravity and pressure profile for a planet.
+
+# Arguments
+- `plnt::Planet` - planet parameters
+- `ρ::Function`  - density profile
+"""
 function init_profiles(plnt::Planet, ρ::Function)
 
     # radial profile
@@ -143,7 +182,20 @@ function init_profiles(plnt::Planet, ρ::Function)
     return ([r g], [x P])
 end
 
-function temp(r, T1, Ti, P_c, p)
+"""
+    temp(r::Real, T1::Real, Ti::Real, P_c::Real, p)
+
+Calculates the adiabatic temperature based on if `r` is inside the core or the
+envelope. Refer to Stixrude et al. 2021 (eq 12).
+
+# Arguments
+- `r::Real`   - radius
+- `T1::Real`  - temperature
+- `Ti::Real`  - thermal boundary temperature
+- `P_c::Real` - pressure at top of the core
+- `p`         - tuple holding several parameters
+"""
+function temp(r::Real, T1::Real, Ti::Real, P_c::Real, p)
     P, dP = interpolate(p.P[:,1], p.P[:,2], r)
     if P < P_c
         return temp_adiabat(P, T1, P1, p.plnt.∇)
@@ -152,14 +204,35 @@ function temp(r, T1, Ti, P_c, p)
     end
 end
 
-function cons_mass(p, P::Real, a::Real, b::Real)
+"""
+    cons_mass(p, P::Real, a::Real, b::Real)
+
+Integrates the `layer_density` for the luminosity of a planet.
+
+# Arguments
+- `p`        - tuple holding several parameters
+- `P::Real`  - pressure
+- `r0::Real` - radial start
+- `r1::Real` - radial end
+"""
+function cons_mass(p, P::Real, r0::Real, r1::Real)
 
     A, err = quadgk(r -> layer_density(r, p.i(p.P[:,1], p.P[:,2], r)[1], P,
-                                       p.plnt.∇, p.ρ(r)), a, b)
+                                       p.plnt.∇, p.ρ(r)), r0, r1)
 
     return A
 end
 
+"""
+    find_core(T1::Real, p)
+
+Finds top of core values based on intersection of adiabat and melting temperature
+curves.
+
+# Arguments
+- `T1::Real` - temperature
+- `p`        - tuple holding several parameters
+"""
 function find_core(T1::Real, p)
 
     # cross section of melting and adiabat
