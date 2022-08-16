@@ -128,7 +128,7 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
              T_ef=temp_effective, T=temp_adiabat, T_m=temp_melting,
              L=lumin_internal, L_c=lumin_core, i=interpolate)
 
-    prob = ODEProblem(dTdt, u, tspan, param)
+    prob = ODEProblem(dTdt!, u, tspan, param)
     sol = solve(prob, reltol=1e-7, abstol=1e-8, Tsit5())
     T1 = sol[1,:]
     Ti = sol[2,:]
