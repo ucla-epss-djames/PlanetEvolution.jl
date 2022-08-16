@@ -36,13 +36,14 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
 
     g, P = init_profiles(plnt, ρ)
 
-    function dTdt!(dT, T, p, t)
+    function dTdt(T, p, t)
 
         T_ef = p.T_ef(T, p.plnt.B)
         L_f = p.L(p.plnt.R, T_ef, p.plnt.T_eq)
 
         dT = L_f / p.I
-        nothing
+
+        return dT
     end
 
     param = (plnt=plnt, ρ=ρ, P=P, i=interpolate)
@@ -52,7 +53,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
     tspan = (t0, t1*Gyr_to_sec)
     param = (plnt=plnt, I=I, T_ef=temp_effective, L=lumin_internal)
 
-    prob = ODEProblem(dTdt!, u, tspan, param)
+    prob = ODEProblem(dTdt, u, tspan, param)
     sol = solve(prob, reltol=1e-6, abstol=1e-7, Tsit5())
 
     T = sol.u
@@ -81,43 +82,40 @@ and the thrid is temperature of the thermal boundary layer [K].
 function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
                         t0::Real=0.0, t1::Real=10.0)
 
-    function dTdt(T, p, t)
+    function dTdt!(dT, T, p, t)
 
-        T1 = T[1]
-        Ti = T[2]
-        dT1 = dTi = 0
-
-        T_ef = p.T_ef(T1, p.plnt.B)
+        T_ef = p.T_ef(T[1], p.plnt.B)
         L = p.L(p.plnt.R, T_ef, p.plnt.T_eq)
-        c, P_c, T_c, ρ_c, g_c = find_core(T1, p)
+        c, P_c, T_c, ρ_c, g_c = find_core(T[1], p)
 
         if c == 0.0
             # if planet is still fluid
 
             I = p.I(p, P1, 0, p.plnt.R) * -4*π * p.plnt.C_p
 
-            dT1 = L / I
-            dTi = p.T(P_c, dT1, P1, p.plnt.∇)
+            dT[1] = L / I
+            dT[2] = p.T(P_c, dT[1], P1, p.plnt.∇)
 
         else
             # if planet has a core
 
-            q = p.L_c(T1, Ti, c, P_c, T_c, ρ_c, g_c, P1, p.plnt)
+            q = p.L_c(T[1], T[2], c, P_c, T_c, ρ_c, g_c, P1, p.plnt)
 
             L_f = L - q.L_c
 
             I1 = p.I(p, P1, c, p.plnt.R) * -4*π * p.plnt.C_p
             I2 = p.I(p, P_c, 0, c) * -4*π * p.plnt.C_p
 
-            dT1 = L_f / I1
+            dT[1] = L_f / I1
 
-            ∂c∂t = q.K * dT1
+            ∂c∂t = q.K * dT[1]
 
-            dTi = q.L_c + 4*π*c^2*p.plnt.C_p*q.ΔT*∂c∂t*ρ_c + I2*Ti/T1*q.Γ*dT1
-            dTi /= I2
+            dT[2] = q.L_c + 4*π*c^2*p.plnt.C_p*q.ΔT*∂c∂t*ρ_c +
+                I2*T[2]/T[1]*q.Γ*dT[1]
+            dT[2] /= I2
         end
 
-        return [dT1, dTi]
+        nothing
     end
 
     g, P = init_profiles(plnt, ρ)
