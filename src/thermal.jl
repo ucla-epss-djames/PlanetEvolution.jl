@@ -3,7 +3,7 @@ module ThE
 
 using Roots
 using QuadGK
-using DifferentialEquations
+using OrdinaryDiffEq
 
 using Numerics
 using Structure
