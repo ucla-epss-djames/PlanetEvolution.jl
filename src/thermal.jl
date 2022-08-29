@@ -32,7 +32,7 @@ the first column is time [Gyr] and the second column is temperature [K].
 - `t1::Real`     - time end of thermal evolution
 """
 function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
-                        t1::Real=10.0)
+                        t1::Real=10.0, reltol::Real=1e-6, abstol::Real=1e-7)
 
     g, P = init_profiles(plnt, ρ)
 
@@ -54,7 +54,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
     param = (plnt=plnt, I=I, T_ef=temp_effective, L=lumin_internal)
 
     prob = ODEProblem(dTdt, u, tspan, param)
-    sol = solve(prob, reltol=1e-6, abstol=1e-7, Tsit5())
+    sol = solve(prob, reltol=reltol, abstol=abstol, Tsit5())
 
     T = sol.u
     t = sol.t
@@ -78,9 +78,12 @@ and the thrid is temperature of the thermal boundary layer [K].
 - `Ti::Real`     - initial temperature for thermal booundary layer
 - `t0::Real`     - time start of thermal evolution
 - `t1::Real`     - time end of thermal evolution
+- `reltol::Real` - relative tolerance
+- `abstol::Real` - absolute tolerance
 """
 function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
-                        t0::Real=0.0, t1::Real=10.0)
+                        t0::Real=0.0, t1::Real=10.0, reltol::Real=1e-7,
+                        abstol::Real=1e-8)
 
     function dTdt!(dT, T, p, t)
 
@@ -129,7 +132,7 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
              L=lumin_internal, L_c=lumin_core, i=interpolate)
 
     prob = ODEProblem(dTdt!, u, tspan, param)
-    sol = solve(prob, reltol=1e-7, abstol=1e-8, Tsit5())
+    sol = solve(prob, reltol=reltol, abstol=abstol, Tsit5())
     T1 = sol[1,:]
     Ti = sol[2,:]
     t = sol.t
