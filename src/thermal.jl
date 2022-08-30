@@ -175,7 +175,7 @@ function init_profiles(plnt::Planet, ρ::Function)
     u0 = 0
 
     prob = ODEProblem(dP, u0, rspan)
-    sol = solve(prob, reltol=1e-8, abstol=1e-11, Vern7())
+    sol = solve(prob, reltol=1e-8, abstol=1e-11, Vern8())
     P = sol.u[end:-1:1]
     x = sol.t[end:-1:1]
 
