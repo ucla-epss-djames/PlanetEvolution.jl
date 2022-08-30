@@ -820,7 +820,7 @@ uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[deps.Thermal]]
 deps = ["PhysicalConstants", "Structure"]
-git-tree-sha1 = "b3ece217311c98ab73f50edf542ccbe73f7e2d67"
+git-tree-sha1 = "f7bca5dc0f28b46526952d86cc51671138dc7e8b"
 repo-rev = "main"
 repo-url = "https://github.com/ucla-epss-djames/Thermal.jl"
 uuid = "7389ebef-f750-435a-92d2-e0c96a4cbd74"
