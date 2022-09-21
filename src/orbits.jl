@@ -11,7 +11,8 @@ export orbital_recession
                       Ql::AbstractVector, t::AbstractVector, t0::Real,
                       t1::Real; steps::Int=100)
 
-Calculates the orbital recession of a planet's moon.
+Calculates the orbital recession of a planet's moon and describes the tides
+raised on the planet. Refer to Murray's Solar System Dynamics Eq. 4.160.
 
 # Arguments
 - `plnt::Planet`       - planet parameters
@@ -36,11 +37,11 @@ function orbital_recession(plnt::Planet, mn::Moon, kl::AbstractVector,
         a = a[1]
         n = p.n(p.GM, a)
 
-        return 3*a * (abs(k)/Q) * n * (p.gm/p.GM) * (p.R/a)^5
+        return sign(p.ω - n) *3*a * (abs(k)/Q) * n * (p.gm/p.GM) * (p.R/a)^5
     end
 
-    param = (k=kl, Q=Ql, t=t, GM=plnt.GM, gm=mn.gm, R=plnt.R, i=interpolate,
-             n=planet_mmotion)
+    param = (k=kl, Q=Ql, t=t, GM=plnt.GM, gm=mn.gm, R=plnt.R, ω=plnt.ω,
+             i=interpolate, n=planet_mmotion)
     tspan = (t0, t1)
     sol = rk4(dadt, [mn.a], tspan, steps, p=param)
 

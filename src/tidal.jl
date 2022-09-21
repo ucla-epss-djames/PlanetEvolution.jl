@@ -44,12 +44,12 @@ function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Real)
 end
 
 """
-    planet_structure(plnt::Planet, data::Matrix)
+    planet_structure(plnt::Planet, mn::Moon, data::Matrix)
 
 Generates structure matrix of a planet for tidal calculation. The matrix is a 4
 column matrix containing radius, complex shear modulus, gravity, and density.
 """
-function planet_structure(plnt::Planet, data::Matrix)
+function planet_structure(plnt::Planet, mn::Moon, data::Matrix)
 
     mass = 0.0
     r0 = 0.0
@@ -57,6 +57,9 @@ function planet_structure(plnt::Planet, data::Matrix)
     ω = plnt.ω
     μ_f = plnt.μ_f
     model = plnt.rhea_model
+
+    n = planet_mmotion(mn.gm, mn.a)
+    χ = 2 * (ω - n)
 
     sd = zeros(Complex, layers, 4)
 
@@ -72,7 +75,7 @@ function planet_structure(plnt::Planet, data::Matrix)
 
         sd[i,4] = ρ
         sd[i,3] = g
-        sd[i,2] = planet_cmu(μ, ω, η, r1, g, ρ, μ_f, model)
+        sd[i,2] = planet_cmu(μ, χ, η, r1, g, ρ, μ_f, model)
         sd[i,1] = r1
 
     end
@@ -81,13 +84,13 @@ function planet_structure(plnt::Planet, data::Matrix)
 end
 
 """
-    tidal_resp(plnt::Planet, data::Matrix, flag::Bool; l::Int=2)
+    tidal_resp(plnt::Planet, mn::Moon, data::Matrix, flag::Bool; l::Int=2)
 
 Calculates the tidal response of a planet.
 """
-function tidal_resp(plnt::Planet, data::Matrix, flag::Bool; l::Int=2)
+function tidal_resp(plnt::Planet, mn::Moon, data::Matrix, flag::Bool; l::Int=2)
 
-    sd, mass = planet_structure(plnt, data)
+    sd, mass = planet_structure(plnt, mn, data)
 
     normalize!(mass, real(sd[end,1]), sd)
     tidal = propagator_method(l, plnt.layers, sd, flag)
