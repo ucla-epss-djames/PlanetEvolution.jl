@@ -47,7 +47,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
         return dT
     end
 
-    param = (plnt=plnt, ρ=ρ, P=P, i=interpolate)
+    param = (plnt=plnt, ρ=ρ, P=P, i=Numerics.interpolate)
     I = cons_mass(param, P1, 0, plnt.R) * -4*π * plnt.C_p
 
     u = T1
