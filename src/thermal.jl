@@ -4,6 +4,7 @@ module ThE
 using Roots
 using QuadGK
 using OrdinaryDiffEq
+using Interpolations
 
 using Numerics
 using Structure
@@ -168,18 +169,20 @@ function init_profiles(plnt::Planet, ρ::Function)
         g[i] = gi
 
     end
+    g = CubicSplineInterpolation(r, g, extrapolation_bc=Line())
+    println(plnt.name, " mass: ", mass, " kg")
 
     # pressure profile
-    dP(u, p, x) = dPdr(ρ(x), interpolate(r, g, x)[1])
+    dP(u, p, x) = dPdr(ρ(x), g(x))
     rspan = (plnt.R, 0)
     u0 = 0
 
     prob = ODEProblem(dP, u0, rspan)
-    sol = solve(prob, reltol=1e-8, abstol=1e-10, OwrenZen3())
+    sol = solve(prob, reltol=1e-8, abstol=1e-10, Tsit5())
     P = sol.u[end:-1:1]
     x = sol.t[end:-1:1]
 
-    return ([r g], [x P])
+    return (g, [x P])
 end
 
 """
@@ -257,7 +260,7 @@ function find_core(T1::Real, p)
     # gather the rest of the surface core values
     T_c = p.T(P_c, T1, P1, p.plnt.∇)
     ρ_c = p.ρ(c)
-    g_c = interpolate(p.g[:,1], p.g[:,2], c)[1]
+    g_c = p.g(c)
 
     return (c, P_c, T_c, ρ_c, g_c)
 end
