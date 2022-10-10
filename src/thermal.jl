@@ -130,7 +130,7 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
     tspan = (t0, t1*Gyr_to_sec)
     param = (plnt=plnt, ρ=ρ, g=g, P=P, find_core=find_core, I=cons_mass,
              T_ef=temp_effective, T=temp_adiabat, T_m=temp_melting,
-             L=lumin_internal, L_c=lumin_core, i=interpolate)
+             L=lumin_internal, L_c=lumin_core, i=Numerics.interpolate)
 
     prob = ODEProblem(dTdt!, u, tspan, param)
     sol = solve(prob, reltol=reltol, abstol=abstol, Vern6())
@@ -199,7 +199,7 @@ envelope. Refer to Stixrude et al. 2021 (eq 12).
 - `p`         - tuple holding several parameters
 """
 function temp(r::Real, T1::Real, Ti::Real, P_c::Real, p)
-    P, dP = interpolate(p.P[:,1], p.P[:,2], r)
+    P, dP = Numerics.interpolate(p.P[:,1], p.P[:,2], r)
     if P < P_c
         return temp_adiabat(P, T1, P1, p.plnt.∇)
     else
@@ -253,7 +253,7 @@ function find_core(T1::Real, p)
         P_c = x[1]
 
         # use core pressure to interpolate the radius of the core
-        c, dc = interpolate(p.P[:,2], p.P[:,1], P_c)
+        c, dc = p.i(p.P[:,2], p.P[:,1], P_c)
 
     end
 
