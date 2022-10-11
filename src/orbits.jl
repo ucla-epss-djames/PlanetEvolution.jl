@@ -37,11 +37,16 @@ function orbital_recession(plnt::Planet, mn::Moon, kl::AbstractVector,
         a = a[1]
         n = p.n(p.GM, a)
 
-        return sign(p.ω - n) *3*a * (abs(k)/Q) * n * (p.gm/p.GM) * (p.R/a)^5
+        if(p.retro)
+            return -3*a * (abs(k)/Q) * n * (p.gm/p.GM) * (p.R/a)^5
+        else
+            return sign(p.ω - n) *3*a * (abs(k)/Q) * n * (p.gm/p.GM) * (p.R/a)^5
+        end
+
     end
 
     param = (k=kl, Q=Ql, t=t, GM=plnt.GM, gm=mn.gm, R=plnt.R, ω=plnt.ω,
-             i=interpolate, n=planet_mmotion)
+             retro=mn.retro, i=interpolate, n=planet_mmotion)
     tspan = (t0, t1)
     sol = rk4(dadt, [mn.a], tspan, steps, p=param)
 
