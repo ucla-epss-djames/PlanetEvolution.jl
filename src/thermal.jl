@@ -133,7 +133,7 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
              L=lumin_internal, L_c=lumin_core, i=Numerics.interpolate)
 
     prob = ODEProblem(dTdt!, u, tspan, param)
-    sol = solve(prob, reltol=reltol, abstol=abstol, Vern6())
+    sol = solve(prob, reltol=reltol, abstol=abstol, Vern7())
     T1 = sol[1,:]
     Ti = sol[2,:]
     t = sol.t
