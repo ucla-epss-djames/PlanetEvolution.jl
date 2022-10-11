@@ -55,7 +55,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
     param = (plnt=plnt, I=I, T_ef=temp_effective, L=lumin_internal)
 
     prob = ODEProblem(dTdt, u, tspan, param)
-    sol = solve(prob, reltol=reltol, abstol=abstol, Vern7())
+    sol = solve(prob, reltol=reltol, abstol=abstol, Tsit5())
 
     T = sol.u
     t = sol.t
@@ -133,7 +133,7 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
              L=lumin_internal, L_c=lumin_core, i=Numerics.interpolate)
 
     prob = ODEProblem(dTdt!, u, tspan, param)
-    sol = solve(prob, reltol=reltol, abstol=abstol, Vern6())
+    sol = solve(prob, reltol=reltol, abstol=abstol, Tsit5())
     T1 = sol[1,:]
     Ti = sol[2,:]
     t = sol.t
