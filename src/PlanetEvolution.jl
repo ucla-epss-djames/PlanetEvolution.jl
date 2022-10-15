@@ -22,6 +22,7 @@ export
 include("orbits.jl")
 using .Orbit
 export
-    orbital_recession
+    orbital_evolution,
+    inclination_evolution
 
 end # module
