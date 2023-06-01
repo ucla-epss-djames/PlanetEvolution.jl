@@ -34,7 +34,7 @@ function planet_evo(plnt, rho, T1, mn, path)
     s = findnext(x -> x > 0, c, 1)
     q = [lumin_core(two_lyr[i,2], two_lyr[i,3], c[i], P_c[i], T_c[i], rho_c[i],
                     g_c[i], P1, plnt) for i in s:l]
-    Ra = [(i < s ? 0 : q[i].Ra) for i in 1:l]
+    Ra = [(i < s ? 0. : q[i-s+1].Ra) for i in 1:l]
     δ = c[i] .* (plnt.Ra ./ Ra) .^ (1/3)
     δ[isnan.(δ)] .= 10 * 1e3
     val, i = findmin(δ)
