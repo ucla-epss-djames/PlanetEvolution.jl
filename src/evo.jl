@@ -1,4 +1,4 @@
-module evo
+module Evolution
 # Planet's Thermal and Tidal Evolution
 
 using Numerics
