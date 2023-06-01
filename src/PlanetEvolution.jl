@@ -25,4 +25,10 @@ export
     orbital_evolution,
     inclination_evolution
 
+include("evo.jl")
+using .Evolution
+export
+    thermal_evo,
+    tidal_evo
+
 end # module
