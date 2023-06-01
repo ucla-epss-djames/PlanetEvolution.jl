@@ -1,5 +1,4 @@
 module Evolution
-# Planet's Thermal and Tidal Evolution
 
 using Numerics
 using Thermal
@@ -7,9 +6,9 @@ using Planets
 
 using ..PlanetEvolution: two_layer_plnt, init_profiles, find_core, P1, tidal_resp
 
-export thermal_evo, tidal_evo
+export planet_evo, tidal_evo
 
-function thermal_evo(plnt, rho, T1, mn, path)
+function planet_evo(plnt, rho, T1, mn, path)
 
     println("RUNNING TWO LAYER MODEL")
     two_lyr = two_layer_plnt(plnt, rho, T1)
@@ -98,3 +97,6 @@ function tidal_evo(plnt, rho, T2, mn, p)
 
     return kl, Ql
 end
+
+
+end # module

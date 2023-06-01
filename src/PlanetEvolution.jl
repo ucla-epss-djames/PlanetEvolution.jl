@@ -28,7 +28,7 @@ export
 include("evo.jl")
 using .Evolution
 export
-    thermal_evo,
+    planet_evo,
     tidal_evo
 
 end # module
