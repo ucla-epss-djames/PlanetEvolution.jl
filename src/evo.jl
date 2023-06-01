@@ -36,14 +36,10 @@ function planet_evo(plnt, rho, T1, mn, path)
                     g_c[i], P1, plnt) for i in s:l]
     Ra = [(i < s ? 0. : q[i-s+1].Ra) for i in 1:l]
     δ = c .* (plnt.Ra ./ Ra) .^ (1/3)
-    δ[isnan.(δ)] .= 10 * 1e3
-    val, i = findmin(δ)
-    δ[i:end] .= 0
 
     open(path, "w") do io
         for i in 1:l
-            @printf(io, "%16.8e %16.8e %16.8e %16.8e %16.8e %16.8e %16.8e %16.8e
-                         %16.8e %16.8e %16.8e %16.8e %16.8e\n",
+            @printf(io, "%13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e\n",
                     two_lyr[i,1], two_lyr[i,2], two_lyr[i,3], T_c[i], DT[i],
                     P_c[i], c[i], rho_c[i], g_c[i], Ra[i], δ[i], kl[i], Ql[i])
         end
