@@ -24,7 +24,7 @@ function planet_evo(plnt, rho, T1, mn, path)
     c = [val[1] for val in vals]
     P_c = [val[2] for val in vals]
     T_c = [val[3] for val in vals]
-    DT = T2[:,3] .- T_c
+    DT = two_lyr[:,3] .- T_c
     rho_c = [val[4] for val in vals]
     g_c = [val[5] for val in vals]
 
