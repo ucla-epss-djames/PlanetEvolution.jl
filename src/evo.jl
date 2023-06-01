@@ -39,7 +39,7 @@ function planet_evo(plnt, rho, T1, mn, path)
 
     open(path, "w") do io
         for i in 1:l
-            @printf(io, "%13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e %13.5e\n",
+            @printf(io, "%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e\n",
                     two_lyr[i,1], two_lyr[i,2], two_lyr[i,3], T_c[i], DT[i],
                     P_c[i], c[i], rho_c[i], g_c[i], Ra[i], δ[i], kl[i], Ql[i])
         end
