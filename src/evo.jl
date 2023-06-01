@@ -20,8 +20,6 @@ function planet_evo(plnt, rho, T1, mn, path)
     p = (plnt=plnt, ρ=rho, g=g, P=P, T=temp_adiabat, T_m=temp_melting,
          i=Numerics.interpolate)
 
-    kl, Ql = tidal_evo(plnt, rho, two_lyr, mn, p)
-
     vals = [find_core(T, p) for T in two_lyr[:,2]]
     c = [val[1] for val in vals]
     P_c = [val[2] for val in vals]
@@ -29,6 +27,8 @@ function planet_evo(plnt, rho, T1, mn, path)
     DT = T2[:,3] .- T_c
     rho_c = [val[4] for val in vals]
     g_c = [val[5] for val in vals]
+
+    kl, Ql = tidal_evo(plnt, rho, two_lyr, mn, p, c)
 
     l = length(two_lyr[:,1])
     q = [lumin_core(two_lyr[i,2], two_lyr[i,3], c[i], P_c[i], T_c[i], rho_c[i],
@@ -49,7 +49,7 @@ function planet_evo(plnt, rho, T1, mn, path)
     end
 end
 
-function tidal_evo(plnt, rho, T2, mn, p)
+function tidal_evo(plnt, rho, T2, mn, p, c)
 
     mu(T,P) = (101 + P*1e-9/2.41 - (T - 1650)/23.4) * 1e9
 
