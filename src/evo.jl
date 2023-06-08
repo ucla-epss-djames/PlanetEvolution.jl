@@ -14,7 +14,7 @@ function planet_evo(plnt, rho, T1, mn, path)
 
     println("RUNNING ONE LAYER")
     one_lyr = one_layer_plnt(plnt, rho, T1)
-    open(path * "one_layer_plnt", "w") do io
+    open(path * "one_layer_plnt.txt", "w") do io
         for i in 1:length(one_lyr[:,1])
             @printf(io, "%16.8e %16.8e\n",
                     one_lyr[i,1], one_lyr[i,2])
@@ -46,7 +46,7 @@ function planet_evo(plnt, rho, T1, mn, path)
     Ra = [(i < s ? 0. : q[i-s+1].Ra) for i in 1:l]
     δ = c .* (plnt.Ra ./ Ra) .^ (1/3)
 
-    open(path, "w") do io
+    open(path * "two_lyr_plnt.txt", "w") do io
         for i in 1:l
             @printf(io, "%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e\n",
                     two_lyr[i,1], two_lyr[i,2], two_lyr[i,3], T_c[i], DT[i],
