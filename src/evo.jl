@@ -12,6 +12,15 @@ export planet_evo, tidal_evo
 
 function planet_evo(plnt, rho, T1, mn, path)
 
+    println("RUNNING ONE LAYER")
+    one_lyr = one_layer_plnt(plnt, rho, T1)
+    open(path * "one_layer_plnt", "w") do io
+        for i in 1:length(one_lyr[:,1])
+            @printf(io, "%16.8e %16.8e\n",
+                    one_lyr[i,1], one_lyr[i,2])
+        end
+    end
+
     println("RUNNING TWO LAYER MODEL")
     two_lyr = two_layer_plnt(plnt, rho, T1)
 
