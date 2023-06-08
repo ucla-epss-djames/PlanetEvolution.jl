@@ -6,7 +6,7 @@ using Numerics
 using Thermal
 using Planets
 
-using ..PlanetEvolution: two_layer_plnt, init_profiles, find_core, P1, tidal_resp
+using ..PlanetEvolution: one_layer_plnt, two_layer_plnt, init_profiles, find_core, P1, tidal_resp
 
 export planet_evo, tidal_evo
 
