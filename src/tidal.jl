@@ -59,7 +59,7 @@ function planet_structure(plnt::Planet, mn::Moon, data::Matrix)
     model = plnt.rhea_model
 
     n = planet_mmotion(mn.gm, mn.a)
-    χ = abs(2 * (ω - n))
+    χ = 2 * abs(ω - n)
 
     sd = zeros(Complex, layers, 4)
 
