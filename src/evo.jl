@@ -6,23 +6,36 @@ using Numerics
 using Thermal
 using Planets
 
-using ..PlanetEvolution: one_layer_plnt, two_layer_plnt, init_profiles, find_core, P1, tidal_resp
+using ..PlanetEvolution: one_layer_plnt, two_layer_plnt, init_profiles, find_core, P1, tidal_resp, Data_schema, write_json
 
 export planet_evo, tidal_evo
 
-function planet_evo(plnt, rho, T1, mn, path)
+function planet_evo(plnt, rho, rho_path, T1, mn, path)
+
+    d = Dict("date" => get_date(), "plnt" => plnt, "mn" => mn,
+             "density" => rho_path,
+             "cols_one_lyr" => ["time [s]", "effective temp [K]"])
 
     println("RUNNING ONE LAYER")
     one_lyr = one_layer_plnt(plnt, rho, T1)
-    open(path * "one_layer_plnt.txt", "w") do io
-        for i in 1:length(one_lyr[:,1])
-            @printf(io, "%16.8e %16.8e\n",
-                    one_lyr[i,1], one_lyr[i,2])
-        end
-    end
+    l = length(one_lyr[:,1])
+    d["size_one_lyr"] = [l,2]
+    d["data_one_lyr"] = one_lyr
 
     println("RUNNING TWO LAYER MODEL")
     two_lyr = two_layer_plnt(plnt, rho, T1)
+    l = length(two_lyr[:,2])
+    d["cols_two_lyr"] = union(d["cols_one_lyr"], ["internal temp [K]",
+                                                  "surface core temp [K]",
+                                                  "TBL temp [K]",
+                                                  "surface core pres [Pa]",
+                                                  "core radius [m]",
+                                                  "surface core rho [kg m⁻³]",
+                                                  "surface core grav",
+                                                  "Rayleigh Number [-]",
+                                                  "TBL size [m]",
+                                                  "Tidal Love Number k₂ [-]",
+                                                  "Tidal Quality [-]"])
 
     println("INITIALIZING PROFILES")
     g, P = init_profiles(plnt, rho)
@@ -46,13 +59,10 @@ function planet_evo(plnt, rho, T1, mn, path)
     Ra = [(i < s ? 0. : q[i-s+1].Ra) for i in 1:l]
     δ = c .* (plnt.Ra ./ Ra) .^ (1/3)
 
-    open(path * "two_lyr_plnt.txt", "w") do io
-        for i in 1:l
-            @printf(io, "%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e%13.5e\n",
-                    two_lyr[i,1], two_lyr[i,2], two_lyr[i,3], T_c[i], DT[i],
-                    P_c[i], c[i], rho_c[i], g_c[i], Ra[i], δ[i], kl[i], Ql[i])
-        end
-    end
+    d["data_two_lyr"] = [two_lyr T_c DT P_c c rho_c g_c Ra δ kl Ql]
+
+    write_json(d, path)
+
 end
 
 function tidal_evo(plnt, rho, T2, mn, p, c)

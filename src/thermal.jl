@@ -48,7 +48,7 @@ function one_layer_plnt(plnt::Planet, ρ::Function, T1::Real; t0::Real=0.0,
     end
 
     param = (plnt=plnt, ρ=ρ, P=P, i=Numerics.interpolate)
-    I = cons_mass(param, P1, 0, plnt.R) * -4*π * plnt.C_p
+    I = thermal_inertia(param, P1, 0, plnt.R) * -4*π * plnt.C_p
 
     u = T1
     tspan = (t0, t1*Gyr_to_sec)
@@ -128,7 +128,7 @@ function two_layer_plnt(plnt::Planet, ρ::Function, T1::Real; Ti::Real=0,
 
     u = [T1, Ti]
     tspan = (t0, t1*Gyr_to_sec)
-    param = (plnt=plnt, ρ=ρ, g=g, P=P, find_core=find_core, I=cons_mass,
+    param = (plnt=plnt, ρ=ρ, g=g, P=P, find_core=find_core, I=thermal_inertia,
              T_ef=temp_effective, T=temp_adiabat, T_m=temp_melting,
              L=lumin_internal, L_c=lumin_core, i=Numerics.interpolate)
 
@@ -208,7 +208,7 @@ function temp(r::Real, T1::Real, Ti::Real, P_c::Real, p)
 end
 
 """
-    cons_mass(p, P::Real, a::Real, b::Real)
+    thermal_inertia(p, P::Real, a::Real, b::Real)
 
 Integrates the `layer_density` for the luminosity of a planet.
 
@@ -218,7 +218,7 @@ Integrates the `layer_density` for the luminosity of a planet.
 - `r0::Real` - radial start
 - `r1::Real` - radial end
 """
-function cons_mass(p, P::Real, r0::Real, r1::Real)
+function thermal_inertia(p, P::Real, r0::Real, r1::Real)
 
     A, err = quadgk(r -> layer_density(r, p.i(p.P[:,1], p.P[:,2], r)[1], P,
                                        p.plnt.∇, p.ρ(r)), r0, r1)
