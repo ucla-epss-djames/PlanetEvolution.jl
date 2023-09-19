@@ -25,6 +25,7 @@ function planet_evo(plnt, rho, rho_path, T1, mn, path)
     println("RUNNING TWO LAYER MODEL")
     two_lyr = two_layer_plnt(plnt, rho, T1)
     l = length(two_lyr[:,2])
+    d["size_two_lyr"] = [l,13]
     d["cols_two_lyr"] = union(d["cols_one_lyr"], ["internal temp [K]",
                                                   "surface core temp [K]",
                                                   "TBL temp [K]",

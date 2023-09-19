@@ -18,11 +18,11 @@ struct Data_Schema
 
     # evolutionary output data
     cols_one_lyr    ::    Vector{String}
-    size_one_lyr    ::    Vector{Float64}
-    data_one_lyr    ::    Vector{Vector{Float64}}
+    size_one_lyr    ::    Vector{Int64}
+    data_one_lyr    ::    Vector{Vector{Real}}
     cols_two_lyr    ::    Vector{String}
-    size_two_lyr    ::    Vector{Float64}
-    data_two_lyr    ::    Vector{Vector{Float64}}
+    size_two_lyr    ::    Vector{Int64}
+    data_two_lyr    ::    Vector{Vector{Real}}
 
 end
 StructTypes.StructType(::Type{Data_Schema}) = StructTypes.Struct()
@@ -38,12 +38,12 @@ end
 
 function read_json(path)
 
-    d = JSON3.read(path, Data_Schema, allow_inf=true)
+    d = JSON3.read(path, allow_inf=true)
 
     d.data_one_lyr = convert(Matrix{Float64},
-                             reshape(d.data_one_lyr, (d.size_one_lyr)))
+                             reshape(d.data_one_lyr, (d.size_one_lyr...)))
     d.data_two_lyr = convert(Matrix{Float64},
-                             reshape(d.data_two_lyr, (d.size_two_lyr)))
+                             reshape(d.data_two_lyr, (d.size_two_lyr...)))
 
     return d
 end
