@@ -12,9 +12,7 @@ using Interpolations
 # time how DiffEq may be performing with newer version of Julia
 
 using Numerics
-using Structure
 using Planets
-using Thermal
 
 using ..PlanetEvolution: calc_gravity
 

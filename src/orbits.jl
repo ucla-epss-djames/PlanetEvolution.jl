@@ -1,7 +1,6 @@
 module Orbit
 
-using Planets: Planet, Moon
-using Structure: planet_mmotion
+using Planets
 using Numerics: interpolate, rk4
 
 export orbital_evolution, inclination_evolution

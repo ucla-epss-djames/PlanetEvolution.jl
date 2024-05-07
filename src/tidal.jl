@@ -4,7 +4,6 @@ module TRIPS
 using PhysicalConstants.CODATA2014: G
 using QuadGK: quadgk
 
-using Structure
 using Tidal
 using Planets
 
