@@ -6,7 +6,6 @@ using Interpolations
 using Numerics
 using Planets: Planet, calc_gravity, thermal_inertia, temp_effective, lumin_internal
 
-
 export P1
 export one_layer_plnt, two_layer_plnt, init_profiles, temp, find_core
 
@@ -200,25 +199,6 @@ function temp(r::Real, T1::Real, Ti::Real, P_c::Real, p)
     else
         return temp_adiabat(P, Ti, P_c, p.plnt.∇)
     end
-end
-
-"""
-    thermal_inertia(p, P::Real, a::Real, b::Real)
-
-Integrates the `layer_density` for the luminosity of a planet.
-
-# Arguments
-- `p`        - tuple holding several parameters
-- `P::Real`  - pressure
-- `r0::Real` - radial start
-- `r1::Real` - radial end
-"""
-function thermal_inertia(p, P::Real, r0::Real, r1::Real)
-
-    A, err = quadgk(r -> layer_density(r, p.i(p.P[:,1], p.P[:,2], r)[1], P,
-                                       p.plnt.∇, p.ρ(r)), r0, r1)
-
-    return A
 end
 
 """
