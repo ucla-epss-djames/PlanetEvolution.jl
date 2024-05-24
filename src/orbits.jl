@@ -1,6 +1,4 @@
-module Orbit
-
-using Planets
+using Planets: Planet, Moon, planet_mmotion
 using Numerics: interpolate, rk4
 
 export orbital_evolution, inclination_evolution
@@ -95,6 +93,3 @@ function inclination_evolution(plnt::Planet, mn::Moon, kl::AbstractVector,
 
     return sol
 end
-
-
-end # module

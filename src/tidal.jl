@@ -1,46 +1,7 @@
-module TRIPS
-# [T]idal [R]esponse [I]n [P]lanetary [S]tructure
-
-using PhysicalConstants.CODATA2014: G
-using QuadGK: quadgk
-
 using Tidal
 using Planets
 
-export calc_gravity, planet_structure, tidal_resp
-
-"""
-    calc_gravity(r0::Real, r1::Real, mass::Real, ρ)
-
-Calculates the gravity of a planetary body.
-
-# Arguments
-- `r0::Real` - initial radius
-- `r1::Real` - final radius
-- `mass::Real` - mass
-- `ρ` - density
-"""
-calc_gravity(r0::Real, r1::Real, mass::Real, ρ) = _calc_gravity(r0, r1, mass, ρ)
-
-function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Function)
-
-    res, err = quadgk(x -> dmdr(x, ρ(x)), r0, r1)
-    m += res
-
-    g = planet_g(r1, m*G.val)
-
-    return m, g
-end
-
-function _calc_gravity(r0::Real, r1::Real, m::Real, ρ::Real)
-
-    res, err = quadgk(x -> dmdr(x, ρ), r0, r1)
-    m += res
-
-    g = planet_g(r1, m*G.val)
-
-    return m, g
-end
+export planet_structure, tidal_resp
 
 """
     planet_structure(plnt::Planet, mn::Moon, data::Matrix)
@@ -95,5 +56,3 @@ function tidal_resp(plnt::Planet, mn::Moon, data::Matrix, flag::Bool; l::Int=2)
     tidal = propagator_method(l, plnt.layers, sd, flag)
 
 end
-
-end # module

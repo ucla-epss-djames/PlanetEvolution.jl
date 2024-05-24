@@ -1,20 +1,11 @@
-module ThE
-# [Th]ermal [E]volution
-
 using Roots
 using QuadGK
 using OrdinaryDiffEq
 using Interpolations
-# using Accessors # allow for updating the mass when generating gravity profile
-# update packages in PlanetsEvo
-# perhaps do some renaming of modules
-# look into updating Tidal with faster matricies
-# time how DiffEq may be performing with newer version of Julia
 
 using Numerics
-using Planets
+using Planets: Planet, calc_gravity, thermal_inertia, temp_effective, lumin_internal
 
-using ..PlanetEvolution: calc_gravity
 
 export P1
 export one_layer_plnt, two_layer_plnt, init_profiles, temp, find_core
@@ -155,9 +146,10 @@ Generates a gravity and pressure profile for a planet.
 - `ρ::Function`  - density profile
 """
 function init_profiles(plnt::Planet, ρ::Function)
+    # updating mass and returning a new plnt
 
     # radial profile
-    r = 0.01:100:plnt.R
+    r = 0.01:plnt.layers:plnt.R
     l = length(r)
 
     # gravity profile
@@ -267,5 +259,3 @@ function find_core(T1::Real, p)
 
     return (c, P_c, T_c, ρ_c, g_c)
 end
-
-end # module
