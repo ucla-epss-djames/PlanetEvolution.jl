@@ -1,5 +1,3 @@
-module Util
-
 using StructTypes
 using JSON3
 using Planets
@@ -59,5 +57,3 @@ function read_json(path)
                        d.cols_two_lyr, d.size_two_lyr, data_two_lyr)
 
 end
-
-end # module
